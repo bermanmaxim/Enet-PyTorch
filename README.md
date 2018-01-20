@@ -57,5 +57,5 @@ The max-unpooling modules unpool the last pooling module (FIFO), which is approp
 * Based on [carwin](https://github.com/clcarwin)'s [convert_torch_to_pytorch](https://github.com/clcarwin/convert_torch_to_pytorch).
 
 ## License
-In compliance with ENet's license, this work follows the [CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/) license.
+The converter code developed in this repository follows the MIT license. [ENet](https://github.com/e-lab/ENet-training)'s model and weights (provided externally to this repository) are part of ENet and follow the [CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/) license.
 
