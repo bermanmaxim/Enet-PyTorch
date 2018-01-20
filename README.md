@@ -38,7 +38,7 @@ out = enet_pytorch(Variable(inp))
 Tested to reproduce ENet original results. 
 
 ## Model and weights
-For reference the output on the author's cityscapes model and associated converted weights are provided on https://goo.gl/Rvtqxr. 
+For reference the output on the author's cityscapes model and associated converted weights are provided on https://goo.gl/Rvtqxr. The `enet_cityscapes_label.py` specifies the conversion of training IDs to original cityscapes dataset IDs for this model.
 
 ## Scores on the validation set
 The author's converted model's scores on cityscapes validation set are as follows
