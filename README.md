@@ -35,7 +35,10 @@ inp = F.upsample(Variable(inp), (512, 1024), mode='bilinear').data
 out = enet_pytorch(Variable(inp))
 ```
 
-Tested to reproduce ENet original results. For reference the output on the author's cityscapes model is included as `enet_pytorch.py`.
+Tested to reproduce ENet original results. 
+
+## Model and weights
+For reference the output on the author's cityscapes model is included as `enet_pytorch.py`, and the converted weights are provided on [this link](https://drive.google.com/open?id=1GQU0EvaS7PBtCRG-cl1M0D_QkWjd2Bzf).
 
 ## Implementation notes
 The max-unpooling modules unpool the last pooling module (FIFO), which is appropriate for encoder-decoder segmentation networks. This converter is not tested for other networks than ENet.
