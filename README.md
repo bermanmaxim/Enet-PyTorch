@@ -1,34 +1,50 @@
-# Convert torch to pytorch
-Convert torch t7 model to pytorch model and source.
+# ENet-PyTorch
+Fork based on [convert_torch_to_pytorch](https://github.com/clcarwin/convert_torch_to_pytorch) and adapted for image segmentation with [ENet](https://github.com/e-lab/ENet-training) in PyTorch.
 
-## Convert
+## Conversion from torch ENet
+* Convert the source Enet trained model in PyTorch from GPU to CPU weights
+
 ```bash
-python convert_torch.py -m vgg16.t7
+$ th convert_torch_gpu_to_cpu.lua -model model-best.net
+saved cpu-model-best.net
 ```
-Two file will be created ```vgg16.py``` ```vgg16.pth```
 
-## Example
+* Convert the lua model to a pytorch script and state dict.
+
+```bash
+$ python convert_torch.py --model cpu-model-best.net --output enet_pytorch
+```
+This produces a standalone script `enet_pytorch.py` defining a `torch.nn` module, and an associated state dict.
+
+*Example usage:*
 ```python
-import vgg16
+import torch
+from torch.autograd import Variable
+import torch.nn.functional as F
+import cv2
+from enet_pytorch import enet_pytorch
 
-model = vgg16.vgg16
-model.load_state_dict(torch.load('vgg16.pth'))
-model.eval()
-...
+enet_pytorch.load_state_dict(torch.load('enet_pytorch.pth'))
+enet_pytorch.cuda().eval()
+
+img = 'frankfurt_000001_030067_leftImg8bit.png'
+im = cv2.imread(img).astype(np.float32)[:, :, ::-1]/255
+inp = torch.from_numpy(im.transpose(2, 0, 1)).unsqueeze(0).cuda()
+inp = F.upsample(Variable(inp), (512, 1024), mode='bilinear').data
+
+out = enet_pytorch(Variable(inp))
 ```
-## Validated
-All the models in this table can be converted and the results have been validated.
 
-| Network             | Download |
-| ------------------- | -------- |
-| AlexNet | [cnn-benchmarks](https://github.com/jcjohnson/cnn-benchmarks) |
-| Inception-V1 | [cnn-benchmarks](https://github.com/jcjohnson/cnn-benchmarks) |
-| VGG-16 | [cnn-benchmarks](https://github.com/jcjohnson/cnn-benchmarks) |
-| VGG-19 | [cnn-benchmarks](https://github.com/jcjohnson/cnn-benchmarks) |
-| ResNet-18 | [cnn-benchmarks](https://github.com/jcjohnson/cnn-benchmarks) |
-| ResNet-200 | [cnn-benchmarks](https://github.com/jcjohnson/cnn-benchmarks) |
-| ResNeXt-50 (32x4d) | [ResNeXt](https://github.com/facebookresearch/ResNeXt) |
-| ResNeXt-101 (32x4d) | [ResNeXt](https://github.com/facebookresearch/ResNeXt) |
-| ResNeXt-101 (64x4d) | [ResNeXt](https://github.com/facebookresearch/ResNeXt) |
-| DenseNet-264 (k=32) | [DenseNet](https://github.com/liuzhuang13/DenseNet#results-on-imagenet-and-pretrained-models) |
-| DenseNet-264 (k=48) | [DenseNet](https://github.com/liuzhuang13/DenseNet#results-on-imagenet-and-pretrained-models) |
+Tested to reproduce ENet original results. For reference the output on the author's cityscapes model is included as `enet_pytorch.py`.
+
+## Implementation notes
+The max-unpooling modules unpool the last pooling module (FIFO), which is appropriate for encoder-decoder segmentation networks. This converter is not tested for other networks than ENet.
+
+
+## References
+* Refer to [ENet](https://github.com/e-lab/ENet-training) original authors.
+* Based on [carwin](https://github.com/clcarwin)'s [convert_torch_to_pytorch](https://github.com/clcarwin/convert_torch_to_pytorch).
+
+## License
+In compliance with ENet's license, this work follows the [CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/) license.
+
