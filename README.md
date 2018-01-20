@@ -40,6 +40,14 @@ Tested to reproduce ENet original results.
 ## Model and weights
 For reference the output on the author's cityscapes model and associated converted weights are provided on https://goo.gl/Rvtqxr. 
 
+## Scores on the validation set
+The author's converted model's scores on cityscapes validation set are as follows
+
+| Class IoU     | Class iIoU    | Category IoU  | Category iIoU  |
+|:-------------:|:-------------:|:-------------:|:--------------:|
+| 60.4          | 36.2          | 80.0          | 63.9           |
+
+
 ## Implementation notes
 The max-unpooling modules unpool the last pooling module (FIFO), which is appropriate for encoder-decoder segmentation networks. This converter is not tested for other networks than ENet (but should remain compatible with the models tested with [convert_torch_to_pytorch](https://github.com/clcarwin/convert_torch_to_pytorch)).
 
