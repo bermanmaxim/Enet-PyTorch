@@ -2,14 +2,14 @@
 Fork based on [convert_torch_to_pytorch](https://github.com/clcarwin/convert_torch_to_pytorch) and adapted for image segmentation with [ENet](https://github.com/e-lab/ENet-training) in PyTorch.
 
 ## Conversion from torch ENet
-* Convert the source Enet trained model in PyTorch from GPU to CPU weights
+* Convert the source torch7 trained model from `cutorch/cudnn` weights to `CPU` weights for conversion:
 
 ```bash
 $ th convert_torch_gpu_to_cpu.lua -model model-best.net
 saved cpu-model-best.net
 ```
 
-* Convert the lua model to a pytorch script and state dict.
+* Convert the lua model to a pytorch script and state dict:
 
 ```bash
 $ python convert_torch.py --model cpu-model-best.net --output enet_pytorch
@@ -41,7 +41,7 @@ Tested to reproduce ENet original results.
 For reference the output on the author's cityscapes model is included as `enet_pytorch.py`, and the converted weights are provided on [this link](https://drive.google.com/open?id=1GQU0EvaS7PBtCRG-cl1M0D_QkWjd2Bzf).
 
 ## Implementation notes
-The max-unpooling modules unpool the last pooling module (FIFO), which is appropriate for encoder-decoder segmentation networks. This converter is not tested for other networks than ENet.
+The max-unpooling modules unpool the last pooling module (FIFO), which is appropriate for encoder-decoder segmentation networks. This converter is not tested for other networks than ENet (but should remain compatible with the models tested with [convert_torch_to_pytorch](https://github.com/clcarwin/convert_torch_to_pytorch)).
 
 
 ## References
