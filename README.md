@@ -38,7 +38,7 @@ out = enet_pytorch(Variable(inp))
 Tested to reproduce ENet original results. 
 
 ## Model and weights
-For reference the output on the author's cityscapes model is included as `enet_pytorch.py`, and the converted weights are provided on [this link](https://drive.google.com/open?id=1GQU0EvaS7PBtCRG-cl1M0D_QkWjd2Bzf).
+For reference the output on the author's cityscapes model and associated converted weights are provided on https://goo.gl/Rvtqxr. 
 
 ## Implementation notes
 The max-unpooling modules unpool the last pooling module (FIFO), which is appropriate for encoder-decoder segmentation networks. This converter is not tested for other networks than ENet (but should remain compatible with the models tested with [convert_torch_to_pytorch](https://github.com/clcarwin/convert_torch_to_pytorch)).
