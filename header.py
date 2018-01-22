@@ -83,33 +83,30 @@ class Dropout2d(nn.Dropout2d):
         return super(Dropout2d, self).forward(input)
 
 
-class StatefulMaxPool2d(nn.MaxPool2d): # keeps indices and input sizes, and keep track of instances available for unpooling
-    instances = []
+class StatefulMaxPool2d(nn.MaxPool2d): # object keeps indices and input sizes
 
     def __init__(self, *args, **kwargs):
         super(StatefulMaxPool2d, self).__init__(*args, **kwargs)
-        StatefulMaxPool2d.instances.append(self)
+        self.indices = None
+        self.input_size = None
 
     def forward(self, x):
-        retind = self.return_indices
-        self.return_indices = True
+        return_indices, self.return_indices = self.return_indices, True
         output, indices = super(StatefulMaxPool2d, self).forward(x)
+        self.return_indices = return_indices
         self.indices = indices
         self.input_size = x.size()
-        self.return_indices = retind
-        if self.return_indices:
+        if return_indices:
             return output, indices
-        else:
-            return output
+        return output
 
 
-class StatefulMaxUnpool2d(nn.Module): # unpooling corresponding to last instance of StatefulMaxPool2d
-    def __init__(self):
+class StatefulMaxUnpool2d(nn.Module):
+    def __init__(self, pooling):
         super(StatefulMaxUnpool2d, self).__init__()
-        pooling = StatefulMaxPool2d.instances.pop()
-        self.pooling = (pooling,) # stored as tuple to avoid being considered as submodule
+        self.pooling = pooling
         self.unpooling = nn.MaxUnpool2d(pooling.kernel_size, pooling.stride, pooling.padding)
 
     def forward(self, x):
-        return self.unpooling.forward(x, self.pooling[0].indices, self.pooling[0].input_size)
+        return self.unpooling.forward(x, self.pooling.indices, self.pooling.input_size)
 
